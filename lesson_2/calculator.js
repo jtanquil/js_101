@@ -1,4 +1,6 @@
 const readline = require('readline-sync');
+const MESSAGES = require('./calculator_messages.json');
+const LANGUAGE = 'en';
 let anotherCalculation = 'Y';
 
 function prompt(message) {
@@ -9,30 +11,34 @@ function invalidNumber(number) {
   return number.trimStart() === '' || Number.isNaN(Number(number));
 }
 
-prompt('Welcome to Calculator!');
+function messages(message, lang = LANGUAGE) {
+  return MESSAGES[lang][message];
+}
+
+prompt(messages('welcome'));
 
 do {
-  prompt("What's the first number?");
+  prompt(messages('firstNumber'));
   let number1 = readline.question();
 
   while (invalidNumber(number1)) {
-    prompt("Hmm... that doesn't look like a valid number.");
+    prompt(messages('numberError'));
     number1 = readline.question();
   }
 
-  prompt("What's the second number?");
+  prompt(messages('secondNumber'));
   let number2 = readline.question();
 
   while (invalidNumber(number2)) {
-    prompt("Hmm... that doesn't look like a valid number.");
+    prompt(messages('numberError'));
     number2 = readline.question();
   }
 
-  prompt("What operation would you like to perform?\n1) Add 2) Subtract 3) Multiply 4) Divide");
+  prompt(messages('operation'));
   let operation = readline.question();
 
   while (!['1', '2', '3', '4'].includes(operation)) {
-    prompt('Must choose 1, 2, 3, or 4');
+    prompt(messages('operationError'));
     operation = readline.question();
   }
 
@@ -52,13 +58,13 @@ do {
       break;
   }
 
-  prompt(`The result is: ${output}`);
+  prompt(`${messages('result')} ${output}`);
 
-  prompt("Would you like to do another calculation? (Y/N)");
+  prompt(messages('anotherCalculation'));
   anotherCalculation = readline.question();
 
   while (!['Y', 'N'].includes(anotherCalculation)) {
-    prompt('Must choose Y or N');
+    prompt(messages('anotherCalcError'));
     anotherCalculation = readline.question();
   }
 } while (anotherCalculation === 'Y');

@@ -1,0 +1,17 @@
+{
+  "en" : {
+    "welcome" : "Welcome to Calculator!",
+    "numberError" : "Hmm... that doesn't look like a valid number.",
+    "firstNumber" : "What's the first number?",
+    "secondNumber" : "What's the second number?",
+    "operation" : "What operation would you like to perform?\n1) Add 2) Subtract 3) Multiply 4) Divide",
+    "operationError" : "Must choose 1, 2, 3, or 4",
+    "result" : "The result is:",
+    "anotherCalculation" : "Would you like to do another calculation? (Y/N)",
+    "anotherCalcError" : "Must choose Y or N"
+  },
+  "fr" : {
+  },
+  "jp" : {
+  }
+}
