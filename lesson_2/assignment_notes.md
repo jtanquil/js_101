@@ -9,7 +9,7 @@ Output: monthly payment (in dollars)
 Validation:
 
 - loan amount: dollar amount, positive number, 2 digits after the decimal
-- APR: nonnegative number (that can't be empty string, since '' is coerced to 0)
+- APR: nonnegative number
 - loan duration: positive integer
 
 ```

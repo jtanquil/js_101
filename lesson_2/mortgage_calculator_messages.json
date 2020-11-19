@@ -1,0 +1,10 @@
+{
+  "loanAmount" : "Enter loan amount, in dollars:",
+  "loanAmountInvalid" : "Loan amount must be a positive dollar amount.",
+  "annualPercentageRate" : "Enter APR (5% = '5', 2.5% = '2.5'):",
+  "annualPercentageRateInvalid" : "APR must be a nonnegative number.",
+  "loanDuration" : "Enter loan duration, in months.",
+  "loanDurationInvalid" : "Loan duration must be a positive integer.",
+  "anotherCalculation" : "Another calculation? (y/n)",
+  "anotherCalculationInvalid" : "Please input 'y' or 'n'."
+}

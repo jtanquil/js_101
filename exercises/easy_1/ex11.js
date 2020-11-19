@@ -6,7 +6,7 @@ const asciiValue = (string) => {
   }
 
   return sum;
-}
+};
 
 console.log(asciiValue('Four score'));         // 984
 console.log(asciiValue('Launch School'));      // 1251

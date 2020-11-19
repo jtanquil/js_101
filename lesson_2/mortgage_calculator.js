@@ -1,61 +1,59 @@
 const readline = require('readline-sync');
+const MESSAGES = require('./mortgage_calculator_messages.json');
 
-const prompt = (message) => {
-  console.log(`=> ${message}`);
+const prompt = (key) => {
+  console.log(`=> ${MESSAGES[key]}`);
 };
 
 const isDollarAmount = (number) =>
-  !Number.isNaN(number) && number >= 0.01;
+  !Number.isNaN(Number(number)) && Number(number) >= 0.01;
 const isNonnegativeNumber = (number) =>
-  !Number.isNaN(number) && number > 0;
+  !Number.isNaN(Number(number)) && number.trim() !== '' && Number(number) >= 0;
 const isPositiveInteger = (number) =>
-  Number.isInteger(number) && number > 0;
+  Number.isInteger(Number(number)) && Number(number) > 0;
+const isValidContinueInput = (input) => ['y', 'n'].includes(input.toLowerCase());
 
-const getMonthlyPayment = (loanAmount, annualPercentageRate, loanDuration) => {
-  let monthlyRate = annualPercentageRate / (12 * 100);
-  return loanAmount *
-    (monthlyRate / (1 - Math.pow((1 + monthlyRate), (-loanDuration))));
+const getInput = (inputType, isValidInput) => {
+
+  prompt(inputType);
+  let input = readline.question();
+
+  while (!isValidInput(input)) {
+    prompt(inputType + "Invalid");
+    input = readline.question();
+  }
+
+  return input;
 };
 
+const computeMonthlyPayment =
+  (loanAmount, annualPercentageRate, loanDuration) => {
+    if (annualPercentageRate === 0) {
+      return loanAmount / loanDuration;
+    } else {
+      // divide annual rate by 12 to get monthly rate,
+      // divide by 100 to get percent as a decimal
+      let monthlyRate = annualPercentageRate / (12 * 100);
+      return loanAmount *
+        (monthlyRate / (1 - Math.pow((1 + monthlyRate), (-loanDuration))));
+    }
+  };
+
 while (true) {
-  prompt("Enter loan amount, in dollars:");
-  let loanAmount = Number(readline.question());
-
-  while (!isDollarAmount(loanAmount)) {
-    prompt("Loan amount must be a positive dollar amount.");
-    loanAmount = Number(readline.question());
-  }
-
-  prompt("Enter interest rate (5% = '5', 2.5% = '2.5'):");
-  let annualPercentageRate = Number(readline.question());
-
-  while (!isNonnegativeNumber(annualPercentageRate)) {
-    prompt("Interest rate must be a positive number.");
-    annualPercentageRate = Number(readline.question());
-  }
-
-  prompt("Enter loan duration, in months.");
-  let loanDuration = Number(readline.question());
-
-  while (!isPositiveInteger(loanDuration)) {
-    prompt("Loan duration must be a positive integer.");
-    loanDuration = Number(readline.question());
-  }
+  let loanAmount = Number(getInput("loanAmount", isDollarAmount));
+  let annualPercentageRate = Number(getInput("annualPercentageRate", isNonnegativeNumber));
+  let loanDuration = Number(getInput("loanDuration", isPositiveInteger));
 
   let monthlyPayment =
-    getMonthlyPayment(loanAmount, annualPercentageRate, loanDuration);
+    computeMonthlyPayment(loanAmount, annualPercentageRate, loanDuration);
 
-  prompt(`Your monthly payment is: $${monthlyPayment.toFixed(2)}.`);
+  console.log(`=> Your monthly payment is: $${monthlyPayment.toFixed(2)}.`);
 
-  prompt("Another calculation? (y/n)");
-  let anotherCalculation = readline.question().trim().toLowerCase();
-
-  while (!['y', 'n'].includes(anotherCalculation)) {
-    prompt("Please input 'y' or 'n'.");
-    anotherCalculation = readline.question().trim().toLowerCase();
-  }
+  let anotherCalculation = getInput("anotherCalculation", isValidContinueInput).toLowerCase();
 
   if (anotherCalculation === 'n') {
     break;
+  } else {
+    console.clear();
   }
 }
