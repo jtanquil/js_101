@@ -116,3 +116,77 @@ PRINT result
 
 END
 ```
+
+7. Write a function that takes two strings as arguments, determines the longer of the two strings, and then returns the result of concatenating the shorter string, the longer string, and the shorter string once again. You may assume that the strings are of different lengths.
+
+```
+START
+
+# given string1, string2
+
+IF string1.length > string2.length
+  PRINT string2 + string1 + string2
+ELSE
+  PRINT string1 + string2 + string1
+
+END
+```
+
+8. In the modern era under the Gregorian Calendar, leap years occur in every year that is evenly divisible by 4, unless the year is also divisible by 100. If the year is evenly divisible by 100, then it is not a leap year, unless the year is also evenly divisible by 400.
+
+Assume this rule is valid for any year greater than year 0. Write a function that takes any year greater than 0 as input, and returns true if the year is a leap year, or false if it is not a leap year.
+
+```
+START
+
+# given year
+
+IF year is divisible by 400
+  PRINT true
+ELSE IF year is divisible by 4 AND year is not divisible by 100
+  PRINT true
+ELSE
+  PRINT false
+
+END
+```
+
+10. Write a function that computes the sum of all numbers between 1 and some other number, inclusive, that are multiples of 3 or 5. For instance, if the supplied number is 20, the result should be 98 (3 + 5 + 6 + 9 + 10 + 12 + 15 + 18 + 20).
+
+```
+START
+
+# given number
+
+SET counter = 1
+SET sum = 0
+
+WHILE counter <= number
+  IF counter is divisible by 3 or counter is divisible by 5
+    sum = sum + counter
+  
+  counter = counter + 1
+
+PRINT sum
+
+END
+```
+
+11. Write a function that determines and returns the ASCII string value of a string passed in as an argument. The ASCII string value is the sum of the ASCII values of every character in the string. (You may use String.prototype.charCodeAt() to determine the ASCII value of a character.)
+
+```
+START
+
+# given string
+
+SET sum = 0
+SET index = 0
+
+WHILE counter < length of string
+  sum = sum + ASCII value of character at string index counter
+  counter = counter + 1
+
+PRINT sum
+
+END
+```
