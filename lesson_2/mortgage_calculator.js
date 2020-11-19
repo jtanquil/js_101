@@ -30,7 +30,7 @@ while (true) {
   let annualPercentageRate = Number(readline.question());
 
   while (!isNonnegativeNumber(annualPercentageRate)) {
-    prompt("Interest rate must be a nonnegative number.");
+    prompt("Interest rate must be a positive number.");
     annualPercentageRate = Number(readline.question());
   }
 
