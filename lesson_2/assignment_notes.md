@@ -27,3 +27,27 @@ RETURN input
 
 END
 ```
+
+### RPS Bonus Features ###
+
+2. Shortened Input
+
+Input: one of ['rock', 'paper', 'scissors', 'lizard', 'spock', 'r', 'p', 'sc', 'l', 'sp']
+
+Output: one of ['rock', 'paper', 'scissors', 'lizard', 'spock'] corresponding to the input
+
+```
+START
+
+GET input
+
+WHILE input is not in ['rock', 'paper', 'scissors', 'lizard', 'spock', 'r', 'p', 'sc', 'l', 'sp']
+  GET input
+
+IF input is in ['r', 'p', 'sc', 'l', 'sp']
+  SET choice = corresponding element of ['rock', 'paper', 'scissors', 'lizard', 'spock']
+
+PRINT choice
+
+END
+```

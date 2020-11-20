@@ -1,46 +1,95 @@
 const readline = require('readline-sync');
-const VALID_CHOICES = ['rock', 'paper', 'scissors'];
+const CONSTANTS = require('./rps_constants.json');
 
-function prompt(message) {
+let wins = {
+  user: 0,
+  computer: 0
+};
+
+const prompt = (message) => {
   console.log(`=> ${message}`);
-}
+};
 
-function displayWinner(choice, computerChoice) {
-  if ((choice === 'rock' && computerChoice === 'scissors') ||
-      (choice === 'paper' && computerChoice === 'rock') ||
-      (choice === 'scissors' && computerChoice === 'paper')) {
-    prompt('You win!');
-  } else if ((choice === 'rock' && computerChoice === 'paper') ||
-            (choice === 'paper' && computerChoice === 'scissors') ||
-            (choice === 'scissors' && computerChoice === 'rock')) {
-    prompt('Computer wins!');
+const printMatchResults = () => {
+  prompt(`User wins: ${wins.user}`);
+  prompt(`Computer wins: ${wins.computer}`);
+};
+
+const getGameWinner = (choice, computerChoice) => {
+  if (CONSTANTS.WINNING_CHOICES[choice].includes(computerChoice)) {
+    return 'User';
+  } else if (CONSTANTS.WINNING_CHOICES[computerChoice].includes(choice)) {
+    return 'Computer';
   } else {
-    prompt("It's a tie!");
+    return 'tie';
   }
-}
+};
 
-let answer;
+const getMatchWinner = () => {
+  if (wins.user >= CONSTANTS.MAX_GAMES_WON) {
+    return "User";
+  } else if (wins.computer >= CONSTANTS.MAX_GAMES_WON) {
+    return "Computer";
+  } else {
+    return null;
+  }
+};
 
-do {
-  prompt(`Choose one: ${VALID_CHOICES.join(', ')}`);
-  let choice = readline.question();
+const getUserInput = (inputPrompt, validInputs) => {
+  prompt(inputPrompt);
+  let userInput = readline.question().toLowerCase();
 
-  while (!VALID_CHOICES.includes(choice)) {
+  while (!validInputs.includes(userInput)) {
     prompt("That's not a valid choice");
-    choice = readline.question();
+    userInput = readline.question().toLowerCase();
   }
 
-  let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
-  let computerChoice = VALID_CHOICES[randomIndex];
+  return userInput;
+};
+
+const getUserChoice = (choiceInput, abbreviations) =>
+  (abbreviations.includes(choiceInput) ? CONSTANTS.ABBREVIATION_KEY[choiceInput]
+    : choiceInput);
+
+while (true) {
+  printMatchResults();
+
+  let abbreviations = Object.keys(CONSTANTS.ABBREVIATION_KEY);
+  let userChoicePrompt = `Choose one: ${CONSTANTS.VALID_CHOICES.join(', ')} (${abbreviations.join('/')})`;
+  let validInputs = CONSTANTS.VALID_CHOICES.concat(abbreviations);
+
+  let userChoiceInput = getUserInput(userChoicePrompt, validInputs);
+  let choice = getUserChoice(userChoiceInput, abbreviations);
+
+  let randomIndex = Math.floor(Math.random() * CONSTANTS.VALID_CHOICES.length);
+  let computerChoice = CONSTANTS.VALID_CHOICES[randomIndex];
 
   prompt(`You chose ${choice}, computer chose ${computerChoice}`);
 
-  displayWinner(choice, computerChoice);
+  let gameWinner = getGameWinner(choice, computerChoice);
 
-  prompt('Do you want to play again (y/n)?');
-  answer = readline.question().toLowerCase();
-  while (answer[0] !== 'n' && answer[0] !== 'y') {
-    prompt('Please enter "y" or "n".');
-    answer = readline.question().toLowerCase();
+  switch (gameWinner) {
+    case 'tie':
+      prompt('It was a tie!');
+      break;
+    default:
+      prompt(`${gameWinner} won!`);
+      wins[gameWinner.toLowerCase()] += 1;
   }
-} while (answer[0] === 'y')
+
+  printMatchResults();
+
+  let matchWinner = getMatchWinner();
+
+  if (matchWinner) {
+    prompt(`The match is over! ${matchWinner} is the grand winner!`);
+    wins.user = 0;
+    wins.computer = 0;
+  }
+
+  let answer = getUserInput("Do you want to play again? (y/n)", ["y", "n"]);
+
+  if (answer[0] === 'n') break;
+
+  console.clear();
+}

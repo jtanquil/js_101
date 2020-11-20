@@ -1,0 +1,18 @@
+{
+  "VALID_CHOICES": ["rock", "paper", "scissors", "lizard", "spock"],
+  "ABBREVIATION_KEY": {
+    "r": "rock",
+    "p": "paper",
+    "sc": "scissors",
+    "l": "lizard",
+    "sp": "spock"
+  },
+  "WINNING_CHOICES": {
+    "rock": ["scissors", "lizard"],
+    "paper": ["rock", "spock"],
+    "scissors": ["paper", "lizard"],
+    "lizard": ["spock", "paper"],
+    "spock": ["scissors", "rock"]
+  },
+  "MAX_GAMES_WON": 5
+}
