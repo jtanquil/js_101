@@ -33,3 +33,28 @@ PRINT int
 
 END
 ```
+
+For hex: same as above, except replace "character at the index" with the equivalent hex value, raised to a power of 16 instead of 10
+
+11. Write a function that converts a non-negative integer value (e.g., 0, 1, 2, 3, and so on) to the string representation of that integer.
+
+```
+START
+
+# given an integer, int
+
+SET intArray = ["0", "1", "2", ... , "9"]
+SET intStr = ""
+
+IF int < 10
+  PRINT intArray[int]
+ELSE
+  WHILE int > 0
+    SET onesDigit = int % 10
+    intStr = intArray[onesDigit] + intStr
+    int = (int - onesDigit) / 10
+
+PRINT intStr
+
+END
+```
