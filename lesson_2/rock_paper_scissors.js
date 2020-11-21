@@ -47,26 +47,46 @@ const getUserInput = (inputPrompt, validInputs) => {
   return userInput;
 };
 
-const getUserChoice = (choiceInput, abbreviations) =>
+const parseUserMoveInput = (choiceInput, abbreviations) =>
   (abbreviations.includes(choiceInput) ? CONSTANTS.ABBREVIATION_KEY[choiceInput]
     : choiceInput);
 
-while (true) {
-  printMatchResults();
-
+const getUserMove = () => {
   let abbreviations = Object.keys(CONSTANTS.ABBREVIATION_KEY);
   let userChoicePrompt = `Choose one: ${CONSTANTS.VALID_CHOICES.join(', ')} (${abbreviations.join('/')})`;
   let validInputs = CONSTANTS.VALID_CHOICES.concat(abbreviations);
 
   let userChoiceInput = getUserInput(userChoicePrompt, validInputs);
-  let choice = getUserChoice(userChoiceInput, abbreviations);
 
+  return parseUserMoveInput(userChoiceInput, abbreviations);
+};
+
+const getComputerMove = () => {
   let randomIndex = Math.floor(Math.random() * CONSTANTS.VALID_CHOICES.length);
-  let computerChoice = CONSTANTS.VALID_CHOICES[randomIndex];
+  return CONSTANTS.VALID_CHOICES[randomIndex];
+};
 
-  prompt(`You chose ${choice}, computer chose ${computerChoice}`);
+const updateMatch = (gameWinner) => {
+  wins[gameWinner.toLowerCase()] += 1;
+};
 
-  let gameWinner = getGameWinner(choice, computerChoice);
+const resetScore = () => {
+  wins.user = 0;
+  wins.computer = 0;
+};
+
+prompt("Welcome to Rock-Paper-Scissors! The first to win five games wins the match!");
+
+while (true) {
+  console.clear();
+  printMatchResults();
+
+  let userMove = getUserMove();
+  let computerMove = getComputerMove();
+
+  prompt(`You chose ${userMove}, computer chose ${computerMove}`);
+
+  let gameWinner = getGameWinner(userMove, computerMove);
 
   switch (gameWinner) {
     case 'tie':
@@ -74,7 +94,7 @@ while (true) {
       break;
     default:
       prompt(`${gameWinner} won!`);
-      wins[gameWinner.toLowerCase()] += 1;
+      updateMatch(gameWinner);
   }
 
   printMatchResults();
@@ -83,13 +103,10 @@ while (true) {
 
   if (matchWinner) {
     prompt(`The match is over! ${matchWinner} is the grand winner!`);
-    wins.user = 0;
-    wins.computer = 0;
+    resetScore();
   }
 
   let answer = getUserInput("Do you want to play again? (y/n)", ["y", "n"]);
 
   if (answer[0] === 'n') break;
-
-  console.clear();
 }
