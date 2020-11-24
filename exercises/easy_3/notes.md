@@ -133,3 +133,105 @@ where `F_0 = F_1 = 1`.
 1. Set `fibonacciArray = [1, 1]` (the first two terms of the Fibonacci sequence)
 2. Add an element to `fibonacciArray` using the recurrence relation described above.
 3. If that element has `int` digits, then return the length of `fibonacciArray`. Otherwise, repeat step 2.
+
+5. Write a function that takes a positive integer, n, as an argument, and logs a right triangle whose sides each have n stars. The hypotenuse of the triangle (the diagonal side in the images below) should have one end at the lower-left of the triangle, and the other end at the upper-right.
+
+**Input:** a positive integer `n`
+**Output:** print a right triangle whose sides each have `n` stars.
+
+**Explicit requirements:**
+  - `n` is a positive integer
+  ` the triangle's sides each have `n` stars
+  - the triangle is a right triangle whose right angle is on the bottom right side
+
+**Algorithm:** given a positive integer `n`,
+
+1. Output a string that has n - 1 spaces followed by one `*`.
+2. On the next line, output a string with n - 2 spaces and two `*`s.
+3. On each subsequent line, output a string with one less space followed by one more `*`.
+4. Repeat until `n` lines have been output, with the last line being `n` `*`s.
+
+7. Write a function that returns the number provided as an argument multiplied by two, unless the argument is a double number; return double numbers as-is.
+
+- double number: even-length number whose left-side digits are the same as its right-side digits. (`44` and `103103` are double numbers, `444` and `334433` are not)
+
+**Input:** a number
+**Output:** that number multiplied by 2 if it's not a double number, the number itself if it is a double number
+
+**Explicit requirements:**
+  - the input and output are both numbers
+
+**Algorithm:** given a number `n`,
+
+1. Check if `n` is a double number
+2. If it isn't, return `2 * n`
+3. If it is, return `n`
+
+To check that `n` is a double number:
+
+1. If `n` is odd length, then it is not a double number
+2. If `n` is even length, then set `leftDigits` to be the left side digits and `rightDigits` to be the right side digits.
+3. Then `n` is a double number if and only if `leftDigits` and `rightDigits` are equal.
+
+8. Write a function that determines the mean (average) of the three scores passed to it, and returns the letter associated with that grade.
+
+**Input:** 3 numbers between 0 and 100
+**Output:** a letter grade assigned to the average of the input scores based on the rubric:
+
+90 <= score <= 100: 'A'
+80 <= score < 90: 'B'
+70 <= score < 80: 'C'
+60 <= score < 70: 'D'
+0 <= score < 60: 'F'
+
+**Algorithm**: given 3 numbers, `num1-3`, between `0` and `100`,
+
+1. Compute the average, `avg` of these numbers
+2. Return the grade that is associated to `avg`.
+
+Step 2 can be done by checking these conditions sequentially on `avg`:
+
+1. If `avg` is less than `60`, then return `F`. (because the 3 inputs are at between 0 and 100, so will the average)
+2. If `avg` is less than `70`, then return `D`,
+
+and so on.
+
+9. Given a string that consists of some words and an assortment of non-alphabetic characters, write a function that returns that string with all of the non-alphabetic characters replaced by spaces. If one or more non-alphabetic characters occur in a row, you should only have one space in the result (i.e., the result string should never have consecutive spaces).
+
+**Input:** a string
+**Output:** a string that is a copy of the input, except all the non-alphabetic characters are replaced by spaces, and if one or more non-alphabetic characters occur in a row, they are replaced with exactly one space.
+
+- if the input contains consecutive spaces, does the function contract that to one space?
+
+**Explicit Requirements:**
+  - the input and output are both strings
+
+**Implicit Requirements:**
+  - the function removes consecutive spaces (since they're non-alphabetic characters)\
+
+**Data Structure:** since we are working with strings and looking at each character individually, we will probably want to convert the string into an array whose entries are the characters of the string.
+
+**Algorithm:**
+
+Loop through the characters of the string:
+  1. Let `char` be the current character
+  2. If `char` is a letter, move onto the next character. If it isn't, check whether the previous character in the string is a space.
+  3. If the previous character is a space, remove `char` from the output.
+  4. If the previous character isn't a space, replace `char` with a space.
+  5. Repeat steps 1-4 until the last character of the string is reached.
+
+10. Write a function that takes a year as input and returns the century. The return value should be a string that begins with the century number, and ends with 'st', 'nd', 'rd', or 'th' as appropriate for that number.
+
+New centuries begin in years that end with 01. So, the years 1901 - 2000 comprise the 20th century.
+
+**Input:** an integer representing a year
+**Output:** a string containing the century corresponding to the input year
+
+**Algorithm**: given an integer `year`,
+
+1. Subtract 1 from `year`
+2. Divide the result of step 1 by 100 and add 1 to the whole part, this is the `centuryNumber`
+3. If the `centuryNumber` ends in 0, 4-9, or is from 11-13, then add `th` to it
+4. If not, and the `centuryNumber` ends in 1, add `st` to it
+5. If not, and the `centuryNumber` ends in 2, add `nd` to it
+6. Otherwise, add `rd` to it
