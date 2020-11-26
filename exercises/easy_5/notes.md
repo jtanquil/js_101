@@ -95,3 +95,79 @@ You may assume that both input arrays are non-empty, and that they have the same
 3. add the first element of `arr2` to `arr`.
 4. repeat steps 2 and 3 for the second, third, etc. elements of `arr1` and `arr2` until every element from both has been added to `arr`.
 5. return `arr`.
+
+6. Write a function that takes an array of integers as input, multiplies all of the integers together, divides the result by the number of entries in the array, and returns the result as a string with the value rounded to three decimal places.
+
+**Input:** an array of integers
+**Output:** a string representing the product of the elements of the input, divided by the number of elements in the input, rounded to 3 decimal places
+
+**Explicit requirements:**
+  - the array contains integers
+
+**Implicit requirements:**
+  - there needs to be handling of the case where the array is 0 (otherwise, the multiplicative average would be infinity, how is that rounded to three decimal places?)
+
+**Algorithm:** given an array `arr` of integers,
+
+1. Create a number, `product`, and set it equal to 1.
+2. If `arr` contains no integers, return `Input array contains no elements`.
+3. Otherwise, loop through the elements of the array.
+4. For each element of the array, multiply `product` by that element and assign the result to `product`.
+5. Repeat step 4 until reaching the end of the array.
+6. Divide `product` by the length of `arr` and assign the result to `product`.
+7. Take the value of `product`, rounded to 3 decimal places, and convert it into a string.
+8. Return that string.
+
+7. Write a function that takes two array arguments, each containing a list of numbers, and returns a new array that contains the product of each pair of numbers from the arguments that have the same index. You may assume that the arguments contain the same number of elements.
+
+**Input:** two arrays, each containing a list of numbers, containing the same number of elements
+**Output:** one array, where each element is the product of the corresponding elements from the input arrays
+
+**Explicit requirements:**
+  - the two arrays both contain only numbers, and each have the same number of elements
+
+**Algorithm:** given two arrays, `arr1` and `arr2`,
+
+1. Create an empty array, `arr`.
+2. Loop through the elements of `arr1`.
+3. For each element of `arr1`, multiply it by the correspoonding element in `arr2` and add the result to `arr`.
+4. Repeat step 3 for the remaining elements of `arr1`.
+5. Return `arr`.
+
+11. Write a function that takes a time using this minute-based format and returns the time of day in 24 hour format (hh:mm). Your method should work with any integer input.
+
+**Input:** an integer representing the number of minutes before or after midnight
+**Output:** a string representing the time in 24 hour hh:mm format
+
+**Explicit requirements:**
+  - our function must take positive and negative inputs
+  - `Date` class methods may not be used
+
+**Algorithm:** given an integer `int`,
+
+1. Get the remainder of `int` modulo 1440 (the number of minutes in a day) to get the number of minutes since midnight of that current day.
+2. Take that result and divide it by 60.
+3. Assign the whole part of the result from step 2 to `hours`.
+4. Take the remainder of the result from step 2 and assign it to `minutes`.
+5. Return `${hours}:${minutes}`.
+
+12. Write two functions that each take a time of day in 24 hour format, and return the number of minutes before and after midnight, respectively. Both functions should return a value in the range 0..1439.
+
+**Input:** a string in 24 hour hh:mm format
+**Output:** an integer between `0` and `1439` indicating the number of minutes before/after midnight
+
+**Algorithm:** given a string `time` in 24 hour hh:mm format,
+
+1. Take the first two characters of `time` and convert it into an integer.
+2. Store the result in `hours`.
+3. Convert the last two characters of time and convert it into an integer.
+4. Store the result in `minutes`.
+5. Multiply `hours` by the number of minutes in an hour, and add the result to `minutes`.
+
+(after midnight)
+
+6. Return `minutes`.
+
+(before midnight)
+
+7. Subtract `minutes` from the number of minutes in a day and return the result.
