@@ -13,6 +13,23 @@ const prompt = (message) => {
   console.log(`=> ${message}`);
 };
 
+const joinOr = (arr, delimiter = ', ', lastElementStr = 'or') => {
+  let arrCopy = arr.slice();
+
+  if (arrCopy.length < 2) {
+    return arrCopy.join();
+  } else {
+    arrCopy[arrCopy.length - 1] =
+      lastElementStr + ' ' + arrCopy[arrCopy.length - 1];
+
+    if (arrCopy.length === 2) {
+      return arrCopy.join(' ');
+    } else {
+      return arrCopy.join(delimiter);
+    }
+  }
+};
+
 const initializeBoard = () => {
   let board = {};
 
@@ -50,7 +67,7 @@ const playerChoosesSquare = (board) => {
   let square;
 
   while (true) {
-    prompt(`Choose a square (${emptySquares(board).join(', ')}):`);
+    prompt(`Choose a square: ${joinOr(emptySquares(board))}:`);
     square = readline.question().trim();
 
     if (emptySquares(board).includes(square)) break;
