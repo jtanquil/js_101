@@ -99,10 +99,28 @@ const findImmediateThreats = (board) =>
   WINNING_LINES.filter((line) => isImmediateThreat(board, line))
     .map((line) => getEmptySquare(board, line));
 
+const isVulnerableSquare = (board, line) => {
+  return countMarkers(board, line, COMPUTER_MARKER) === 2 &&
+    countMarkers(board, line, INITIAL_MARKER) === 1;
+};
+
+const findVulnerableSquares = (board) =>
+  WINNING_LINES.filter((line) => isVulnerableSquare(board, line))
+    .map((line) => getEmptySquare(board, line));
+
 const computerChoosesSquare = (board) => {
   let immediateThreats = findImmediateThreats(board);
-  let possibleMoves =
-    immediateThreats.length > 0 ? immediateThreats : emptySquares(board);
+  let vulnerableSquares = findVulnerableSquares(board);
+
+  let possibleMoves;
+  if (vulnerableSquares.length > 0) {
+    possibleMoves = vulnerableSquares;
+  } else if (immediateThreats.length > 0) {
+    possibleMoves = immediateThreats;
+  } else {
+    possibleMoves = emptySquares(board);
+  }
+
   let randomIndex = Math.floor(Math.random() * possibleMoves.length);
 
   let square = possibleMoves[randomIndex];

@@ -75,3 +75,31 @@ To find the winning lines with an immediate threat: given an element `arr` of `W
 1. reduce `arr`, starting with an accumulator of 0: given an element `ele` of `arr`, add 1 to the accumulator if `board[ele] === HUMAN_MARKER`.
 2. do the same with the condition `board[ele] === INITIAL_MARKER`.
 3. if the result of step 1 is 2 and the result of step 2 is 1, then the line contains an immediate threat.
+
+4. Computer AI: Offense
+
+**High Level Algorithm:**
+
+1. find all immediate threats
+2. if there are immediate threats, move to one at random
+3. if there are no immediate threats, finds all vulnerable squares
+4. if there are vulnerable squares, move to one at random
+5. if there are no vulnerable squares, move to a random empty square
+
+`findVulnerableSquares`
+
+**Input:**
+  - a board object, same as in part 3
+**Output:**
+  - an array whose elements are vulnerable squares on the board
+  - a vulnerable square is an empty square in a row, column or diagonal where the other two squares in the corresponding row/column/diagonal are occupied by the computer
+
+**Examples:**
+
+```javascript
+findVulnerableSquare(empty board) // []
+findVulnerableSquare({ 1, 2: COMPUTER_MARKER }) // [3]
+findVulnerableSquare({ 1, 2: COMPUTER_MARKER, 7, 8: COMPUTER_MARKER }) // [3, 4, 5, 9]
+```
+
+**Algorithm:** the same as the algorithm for finding immediate threats, except replacing all instances of `HUMAN_MARKER` with `COMPUTER_MARKER`.
