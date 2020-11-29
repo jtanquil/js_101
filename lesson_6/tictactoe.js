@@ -1,120 +1,92 @@
 const readline = require('readline-sync');
+
 const INITIAL_MARKER = ' ';
 const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = 'O';
-
-// the board is a 3x3 nested object, where the subobjects are rows and
-// board[0][0] is the top left square
-const initializeBoard = () => {
-  let board = {};
-
-  for (let row = 0; row < 3; row += 1) {
-    board[row] = {
-      0: INITIAL_MARKER,
-      1: INITIAL_MARKER,
-      2: INITIAL_MARKER
-    };
-  }
-
-  return board;
-};
+const WINNING_LINES = [
+  [1, 2, 3], [4, 5, 6], [7, 8, 9],
+  [1, 4, 7], [2, 5, 8], [3, 6, 9],
+  [1, 5, 9], [3, 5, 7]
+];
 
 const prompt = (message) => {
   console.log(`=> ${message}`);
 };
 
+const initializeBoard = () => {
+  let board = {};
+
+  for (let square = 1; square <= 9; square += 1) {
+    board[square] = INITIAL_MARKER;
+  }
+
+  return board;
+};
+
 const displayBoard = (board) => {
   console.clear();
 
-  console.log(`You are ${HUMAN_MARKER}. Computer is ${COMPUTER_MARKER}.`);
+  console.log(`You are ${HUMAN_MARKER}. Computer is ${COMPUTER_MARKER}`);
 
   console.log('');
   console.log('     |     |');
-  console.log(`  ${board[0][0]}  |  ${board[0][1]}  |  ${board[0][2]}`);
+  console.log(`  ${board['1']}  |  ${board['2']}  |  ${board['3']}`);
   console.log('     |     |');
   console.log('-----+-----+-----');
   console.log('     |     |');
-  console.log(`  ${board[1][0]}  |  ${board[1][1]}  |  ${board[1][2]}`);
+  console.log(`  ${board['4']}  |  ${board['5']}  |  ${board['6']}`);
   console.log('     |     |');
   console.log('-----+-----+-----');
   console.log('     |     |');
-  console.log(`  ${board[2][0]}  |  ${board[2][1]}  |  ${board[2][2]}`);
+  console.log(`  ${board['7']}  |  ${board['8']}  |  ${board['9']}`);
   console.log('     |     |');
   console.log('');
 };
 
-const getEmptySquares = (board) =>
-  Object.keys(board).map(
-    (row) => Object.keys(board[row]).filter(
-      (key) => board[row][key] === INITIAL_MARKER));
+const emptySquares = (board) =>
+  Object.keys(board).filter((key) => board[key] === INITIAL_MARKER);
 
 const playerChoosesSquare = (board) => {
-  let rowNum;
-  let colNum;
-  let emptySquares = getEmptySquares(board);
+  let square;
 
   while (true) {
-    prompt("Input a row (left to right: 0, 1, 2): ");
-    rowNum = readline.question();
-    prompt("Input a column (top to bottom: 0, 1, 2): ");
-    colNum = readline.question();
+    prompt(`Choose a square (${emptySquares(board).join(', ')}):`);
+    square = readline.question().trim();
 
-    if (emptySquares[rowNum] && emptySquares[rowNum].includes(colNum)) break;
+    if (emptySquares(board).includes(square)) break;
 
-    prompt("Invalid row/column combination, please try again.");
+    prompt("Sorry, that's not a valid choice.");
   }
 
-  board[rowNum][colNum] = HUMAN_MARKER;
+  board[square] = HUMAN_MARKER;
 };
 
-const computerChooseSquare = (board) => {
-  let rowNum;
-  let colNum;
-  let emptySquares = getEmptySquares(board);
+const computerChoosesSquare = (board) => {
+  let randomIndex = Math.floor(Math.random() * emptySquares(board).length);
 
-  do {
-    rowNum = Math.floor(Math.random() * 3);
-    colNum = String(Math.floor(Math.random() * 3));
-  } while (!emptySquares[rowNum].includes(colNum));
-
-  prompt(`Computer chooses square (${rowNum}, ${colNum})`);
-
-  board[rowNum][colNum] = COMPUTER_MARKER;
+  let square = emptySquares(board)[randomIndex];
+  board[square] = COMPUTER_MARKER;
 };
 
-const boardFull = (board) =>
-  getEmptySquares(board).every((row) => row.length === 0);
-
-const checkRowWinner = (board, marker) =>
-  Object.values(board).some(
-    (row) => Object.values(row).every(
-      (char) => char === marker));
-
-const checkCol = (board, marker, column) =>
-  Object.values(board).every((row) => row[column] === marker);
-
-const checkColWinner = (board, marker) =>
-  checkCol(board, marker, 0) ||
-  checkCol(board, marker, 1) ||
-  checkCol(board, marker, 2);
-
-const checkDiagonalWinner = (board, marker) =>
-  [board[0][0], board[1][1], board[2][2]].every((ele) => ele === marker) ||
-  [board[0][2], board[1][1], board[2][0]].every((ele) => ele === marker);
+const boardFull = (board) => emptySquares(board).length === 0;
 
 const detectWinner = (board) => {
-  if (
-    checkRowWinner(board, HUMAN_MARKER) ||
-    checkColWinner(board, HUMAN_MARKER) ||
-    checkDiagonalWinner(board, HUMAN_MARKER)
-  ) {
-    return "Player";
-  } else if (
-    checkRowWinner(board, COMPUTER_MARKER) ||
-    checkColWinner(board, COMPUTER_MARKER) ||
-    checkDiagonalWinner(board, COMPUTER_MARKER)
-  ) {
-    return "Computer";
+  for (let line = 0; line < WINNING_LINES.length; line += 1) {
+    let [ sq1, sq2, sq3 ] = WINNING_LINES[line];
+
+    if (
+      board[sq1] === HUMAN_MARKER &&
+      board[sq2] === HUMAN_MARKER &&
+      board[sq3] === HUMAN_MARKER
+    ) {
+      return 'Player';
+    } else if (
+      board[sq1] === COMPUTER_MARKER &&
+      board[sq2] === COMPUTER_MARKER &&
+      board[sq3] === COMPUTER_MARKER
+    ) {
+      return 'Computer';
+    }
   }
 
   return null;
@@ -131,9 +103,11 @@ while (true) {
     playerChoosesSquare(board);
     if (someoneWon(board) || boardFull(board)) break;
 
-    computerChooseSquare(board);
+    computerChoosesSquare(board);
     if (someoneWon(board) || boardFull(board)) break;
   }
+
+  displayBoard(board);
 
   if (someoneWon(board)) {
     prompt(`${detectWinner(board)} won!`);
@@ -141,9 +115,9 @@ while (true) {
     prompt("It's a tie!");
   }
 
-  prompt("Play again? (y or n)");
+  prompt(`Play again? (y or n)`);
   let answer = readline.question().toLowerCase()[0];
   if (answer !== 'y') break;
 }
 
-prompt("Thanks for playing Tic Tac Toe!");
+prompt('Thanks for playing Tic Tac Toe!');
