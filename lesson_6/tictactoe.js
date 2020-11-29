@@ -47,7 +47,7 @@ const initializeBoard = () => {
 };
 
 const displayBoard = (board) => {
-  console.clear();
+  //console.clear();
 
   console.log(`You are ${HUMAN_MARKER}. Computer is ${COMPUTER_MARKER}`);
 
@@ -73,7 +73,7 @@ const playerChoosesSquare = (board) => {
   let square;
 
   while (true) {
-    prompt(`Choose a square: ${joinOr(emptySquares(board))}:`);
+    prompt(`Choose a square: ${joinOr(emptySquares(board))}`);
     square = readline.question().trim();
 
     if (emptySquares(board).includes(square)) break;
@@ -84,10 +84,28 @@ const playerChoosesSquare = (board) => {
   board[square] = HUMAN_MARKER;
 };
 
-const computerChoosesSquare = (board) => {
-  let randomIndex = Math.floor(Math.random() * emptySquares(board).length);
+const countMarkers = (board, line, marker) =>
+  line.reduce((acc, ele) => (board[ele] === marker ? acc + 1 : acc), 0);
 
-  let square = emptySquares(board)[randomIndex];
+const isImmediateThreat = (board, line) => {
+  return countMarkers(board, line, HUMAN_MARKER) === 2 &&
+    countMarkers(board, line, INITIAL_MARKER) === 1;
+};
+
+const getEmptySquare = (board, line) =>
+  line.find((ele) => board[ele] === INITIAL_MARKER);
+
+const findImmediateThreats = (board) =>
+  WINNING_LINES.filter((line) => isImmediateThreat(board, line))
+    .map((line) => getEmptySquare(board, line));
+
+const computerChoosesSquare = (board) => {
+  let immediateThreats = findImmediateThreats(board);
+  let possibleMoves =
+    immediateThreats.length > 0 ? immediateThreats : emptySquares(board);
+  let randomIndex = Math.floor(Math.random() * possibleMoves.length);
+
+  let square = possibleMoves[randomIndex];
   board[square] = COMPUTER_MARKER;
 };
 
