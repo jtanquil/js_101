@@ -8,9 +8,15 @@ const WINNING_LINES = [
   [1, 4, 7], [2, 5, 8], [3, 6, 9],
   [1, 5, 9], [3, 5, 7]
 ];
+const GAMES_TO_WIN_MATCH = 5;
 
 const prompt = (message) => {
   console.log(`=> ${message}`);
+};
+
+const playAgainPrompt = (message) => {
+  prompt(message);
+  return readline.question().toLowerCase()[0];
 };
 
 const joinOr = (arr, delimiter = ', ', lastElementStr = 'or') => {
@@ -111,30 +117,76 @@ const detectWinner = (board) => {
 
 const someoneWon = (board) => !!detectWinner(board);
 
+const printGameWins = (gameWins) => {
+  prompt(`First to win ${GAMES_TO_WIN_MATCH} games wins the match.`);
+  prompt(`Player: ${gameWins.player} wins.`);
+  prompt(`Computer: ${gameWins.computer} wins.`);
+};
+
+const updateGameWins = (winner, gameWins) => {
+  if (winner === 'Player') {
+    gameWins.player += 1;
+  } else {
+    gameWins.computer += 1;
+  }
+};
+
+const detectMatchWinner = (gameWins) => {
+  if (gameWins.player === GAMES_TO_WIN_MATCH) {
+    return 'Player';
+  } else if (gameWins.computer === GAMES_TO_WIN_MATCH) {
+    return 'Computer';
+  }
+
+  return null;
+};
+
+const someoneWonMatch = (gameWins) => !!detectMatchWinner(gameWins);
+
 while (true) {
-  let board = initializeBoard();
+  let answer;
+  let gameWins = {
+    player: 0,
+    computer: 0
+  };
 
   while (true) {
+    let board = initializeBoard();
+
+    while (true) {
+      displayBoard(board);
+
+      playerChoosesSquare(board);
+      if (someoneWon(board) || boardFull(board)) break;
+
+      computerChoosesSquare(board);
+      if (someoneWon(board) || boardFull(board)) break;
+    }
+
     displayBoard(board);
 
-    playerChoosesSquare(board);
-    if (someoneWon(board) || boardFull(board)) break;
+    if (someoneWon(board)) {
+      let winner = detectWinner(board);
+      prompt(`${winner} won!`);
+      updateGameWins(winner, gameWins);
+    } else {
+      prompt("It's a tie!");
+    }
 
-    computerChoosesSquare(board);
-    if (someoneWon(board) || boardFull(board)) break;
+    printGameWins(gameWins);
+
+    let matchWinner = detectMatchWinner(gameWins);
+
+    if (someoneWonMatch(gameWins)) {
+      prompt(`${matchWinner} has won the match!`);
+      break;
+    }
+
+    answer = playAgainPrompt("Play another game? (y or n)");
+    if (answer !== 'y') break;
   }
 
-  displayBoard(board);
-
-  if (someoneWon(board)) {
-    prompt(`${detectWinner(board)} won!`);
-  } else {
-    prompt("It's a tie!");
-  }
-
-  prompt(`Play again? (y or n)`);
-  let answer = readline.question().toLowerCase()[0];
+  answer = playAgainPrompt("Play another match? (y or n)");
   if (answer !== 'y') break;
 }
-
 prompt('Thanks for playing Tic Tac Toe!');
