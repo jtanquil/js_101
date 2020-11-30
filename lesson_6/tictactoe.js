@@ -1,3 +1,4 @@
+/* eslint-disable max-depth */
 const readline = require('readline-sync');
 
 const INITIAL_MARKER = ' ';
@@ -8,15 +9,13 @@ const WINNING_LINES = [
   [1, 4, 7], [2, 5, 8], [3, 6, 9],
   [1, 5, 9], [3, 5, 7]
 ];
+const MIDDLE_SQUARE = '5';
 const GAMES_TO_WIN_MATCH = 5;
+const PLAY_AGAIN_OPTIONS = ["y", "n"];
+const FIRST_PLAYER_OPTIONS = ["player", "computer"];
 
 const prompt = (message) => {
   console.log(`=> ${message}`);
-};
-
-const playAgainPrompt = (message) => {
-  prompt(message);
-  return readline.question().toLowerCase()[0];
 };
 
 const joinOr = (arr, delimiter = ', ', lastElementStr = 'or') => {
@@ -36,6 +35,18 @@ const joinOr = (arr, delimiter = ', ', lastElementStr = 'or') => {
   }
 };
 
+const validateInput = (message, responses) => {
+  prompt(message);
+  let answer = readline.question().toLowerCase().trim();
+
+  while (!responses.includes(answer)) {
+    prompt(`Invalid response, try again. valid responses are ${joinOr(responses)}:`);
+    answer = readline.question().toLowerCase().trim();
+  }
+
+  return answer;
+};
+
 const initializeBoard = () => {
   let board = {};
 
@@ -47,7 +58,7 @@ const initializeBoard = () => {
 };
 
 const displayBoard = (board) => {
-  //console.clear();
+  console.clear();
 
   console.log(`You are ${HUMAN_MARKER}. Computer is ${COMPUTER_MARKER}`);
 
@@ -123,9 +134,22 @@ const computerChoosesSquare = (board) => {
 
   let randomIndex = Math.floor(Math.random() * possibleMoves.length);
 
-  let square = possibleMoves[randomIndex];
+  // pick square 5 (middle square) if available
+  let square = possibleMoves.includes(MIDDLE_SQUARE) ?
+    MIDDLE_SQUARE : possibleMoves[randomIndex];
   board[square] = COMPUTER_MARKER;
 };
+
+const chooseSquare = (board, currentPlayer) => {
+  if (currentPlayer === "player") {
+    playerChoosesSquare(board);
+  } else if (currentPlayer === "computer") {
+    computerChoosesSquare(board);
+  }
+};
+
+const alternatePlayer = (currentPlayer) =>
+  (currentPlayer === "player" ? "computer" : "player");
 
 const boardFull = (board) => emptySquares(board).length === 0;
 
@@ -189,13 +213,15 @@ while (true) {
   while (true) {
     let board = initializeBoard();
 
+    let firstPlayer = validateInput("Who will move first?", FIRST_PLAYER_OPTIONS);
+    let currentPlayer = firstPlayer;
+
     while (true) {
       displayBoard(board);
 
-      playerChoosesSquare(board);
-      if (someoneWon(board) || boardFull(board)) break;
+      chooseSquare(board, currentPlayer);
+      currentPlayer = alternatePlayer(currentPlayer);
 
-      computerChoosesSquare(board);
       if (someoneWon(board) || boardFull(board)) break;
     }
 
@@ -218,11 +244,11 @@ while (true) {
       break;
     }
 
-    answer = playAgainPrompt("Play another game? (y or n)");
+    answer = validateInput("Play another game? (y or n)", PLAY_AGAIN_OPTIONS);
     if (answer !== 'y') break;
   }
 
-  answer = playAgainPrompt("Play another match? (y or n)");
+  answer = validateInput("Play another match? (y or n)", PLAY_AGAIN_OPTIONS);
   if (answer !== 'y') break;
 }
 prompt('Thanks for playing Tic Tac Toe!');
