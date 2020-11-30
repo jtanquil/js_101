@@ -1,4 +1,3 @@
-/* eslint-disable max-depth */
 const readline = require('readline-sync');
 
 const INITIAL_MARKER = ' ';
@@ -81,16 +80,9 @@ const emptySquares = (board) =>
   Object.keys(board).filter((key) => board[key] === INITIAL_MARKER);
 
 const playerChoosesSquare = (board) => {
-  let square;
-
-  while (true) {
-    prompt(`Choose a square: ${joinOr(emptySquares(board))}`);
-    square = readline.question().trim();
-
-    if (emptySquares(board).includes(square)) break;
-
-    prompt("Sorry, that's not a valid choice.");
-  }
+  let validChoices = emptySquares(board);
+  let square =
+    validateInput(`Choose a square: ${joinOr(validChoices)}`, validChoices);
 
   board[square] = HUMAN_MARKER;
 };
@@ -251,4 +243,5 @@ while (true) {
   answer = validateInput("Play another match? (y or n)", PLAY_AGAIN_OPTIONS);
   if (answer !== 'y') break;
 }
+
 prompt('Thanks for playing Tic Tac Toe!');
