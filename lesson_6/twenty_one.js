@@ -44,18 +44,15 @@ const initializeDeck = () => {
 const initializeGame = () => ({
   deck: initializeDeck(),
   playerHand: [],
-  dealerHand: []
+  dealerHand: [],
+  playerScore: 0,
+  dealerScore: 0
 });
 
 const drawCards = (deck, hand, draws = 1) => {
   for (let numDraws = 1; numDraws <= draws; numDraws += 1) {
     hand.push(deck.shift());
   }
-};
-
-const deal = (game) => {
-  drawCards(game.deck, game.playerHand, INITIAL_HAND_SIZE);
-  drawCards(game.deck, game.dealerHand, INITIAL_HAND_SIZE);
 };
 
 const calculateHandValue = (hand) => {
@@ -76,14 +73,25 @@ const calculateHandValue = (hand) => {
   }
 };
 
-const busted = (hand) => calculateHandValue(hand) > MAX_HAND_SCORE;
+const updateHandValue = (game, player) => {
+  game[`${player}Score`] = calculateHandValue(game[`${player}Hand`]);
+};
+
+const deal = (game) => {
+  drawCards(game.deck, game.playerHand, INITIAL_HAND_SIZE);
+  drawCards(game.deck, game.dealerHand, INITIAL_HAND_SIZE);
+  updateHandValue(game, "player");
+  updateHandValue(game, "dealer");
+};
+
+const busted = (handValue) => handValue > MAX_HAND_SCORE;
 
 const displayHand = (player, game, revealHand = true) => {
   let playerHand = game[`${player}Hand`];
   let hand =
     revealHand ? playerHand.join(', ') : playerHand[0] + `, one unknown card`;
   // only display the hand's value if the entire hand is being revealed
-  let value = revealHand ? ` (Value: ${calculateHandValue(playerHand)})` : '';
+  let value = revealHand ? ` (Value: ${game[`${player}Score`]})` : '';
   prompt(`${capitalize(player)}'s hand: ${hand}${value}`);
 };
 
@@ -94,42 +102,57 @@ const playerTurn = (game) => {
     if (playerMove === 'stay') break;
 
     drawCards(game.deck, game.playerHand);
+    updateHandValue(game, "player");
     prompt("playerHit");
     displayHand("player", game);
 
-    if (busted(game.playerHand)) break;
+    if (busted(game.playerScore)) break;
   }
 
-  if (!busted(game.playerHand)) {
+  if (!busted(game.playerScore)) {
     prompt("playerStay");
   }
 };
 
 const dealerTurn = (game) => {
-  while (calculateHandValue(game.dealerHand) < DEALER_STAY_SCORE) {
+  while (game.dealerScore < DEALER_STAY_SCORE) {
     prompt("dealerHit");
     drawCards(game.deck, game.dealerHand);
+    updateHandValue(game, "dealer");
   }
 
-  if (!busted(game.dealerHand)) {
+  if (!busted(game.dealerScore)) {
     prompt("Dealer stays.");
   }
 };
 
 const detectGameWinner = (game) => {
-  let playerScore = calculateHandValue(game.playerHand);
-  let dealerScore = calculateHandValue(game.dealerHand);
-
-  if (busted(game.dealerHand) || playerScore > dealerScore) {
-    return "player";
-  } else if (busted(game.playerHand) || playerScore < dealerScore) {
+  if (busted(game.playerScore)) {
     return "dealer";
+  } else if (busted(game.dealerScore)) {
+    return "player";
+  } else if (game.dealerScore > game.playerScore) {
+    return "dealer";
+  } else if (game.playerScore > game.dealerScore) {
+    return "player";
   } else {
     return null;
   }
 };
 
 const gameWinnerExists = (game) => !!detectGameWinner(game);
+
+const displayResults = (game) => {
+  displayHand("player", game);
+  displayHand("dealer", game);
+
+  if (gameWinnerExists(game)) {
+    let gameWinner = detectGameWinner(game);
+    prompt(`${capitalize(gameWinner)} wins!`);
+  } else {
+    prompt("tie");
+  }
+};
 
 while (true) {
   console.clear();
@@ -143,27 +166,18 @@ while (true) {
   prompt("playerTurn");
   playerTurn(game);
 
-  if (busted(game.playerHand)) {
+  if (busted(game.playerScore)) {
     prompt("playerBust");
   } else {
     prompt("dealerTurn");
     dealerTurn(game);
 
-    if (busted(game.dealerHand)) {
-      displayHand("dealer", game);
+    if (busted(game.dealerScore)) {
       prompt("dealerBust");
-    } else {
-      displayHand("player", game);
-      displayHand("dealer", game);
-
-      if (gameWinnerExists(game)) {
-        let gameWinner = detectGameWinner(game);
-        prompt(`${capitalize(gameWinner)} wins!`);
-      } else {
-        prompt("tie");
-      }
     }
   }
+
+  displayResults(game);
 
   let anotherGame = validateInput("anotherGame", ["y", "n"]);
   if (anotherGame !== "y") break;

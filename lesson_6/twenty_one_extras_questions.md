@@ -1,0 +1,5 @@
+### Twenty-One Extras and Questions ###
+
+1. Removing extra calls to `total`: we only need to update each player's total when the cards in their hand change. But that requires an actual call to `total` instead of just adding the value of the latest card added to their hand because the value of any aces already in their hand could change depending on the value of the latest card added.
+
+2. The last `playAgain` call: the last call of `playAgain`, at the bottom of the main game loop, is different from the first two because a `continue` statement is unnecessary here. The `continue` statement is necessary after the first two calls because if the player chooses to play again (if `playAgain()` returns `true`) there is still code in the main game loop after those calls that needs to be skipped. If the first two calls to `playAgain` were written as a guard clause, then that code would continue executing even after the player chooses to start a new game.
