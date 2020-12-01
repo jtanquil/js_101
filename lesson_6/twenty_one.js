@@ -7,8 +7,10 @@ const CARD_VALUES = CONSTANTS.CARD_VALUES;
 const ACE = CONSTANTS.ACE;
 const MAX_HAND_SCORE = CONSTANTS.MAX_HAND_SCORE;
 const MOVES = CONSTANTS.MOVES;
+const YES_OR_NO_OPTIONS = CONSTANTS.YES_OR_NO_OPTIONS;
 const MESSAGES = CONSTANTS.MESSAGES;
 const DEALER_STAY_SCORE = CONSTANTS.DEALER_STAY_SCORE;
+const GAME_WINS_TO_WIN_MATCH = CONSTANTS.GAME_WINS_TO_WIN_MATCH;
 
 const prompt = (key) => {
   console.log(`=> ${MESSAGES.hasOwnProperty(key) ? MESSAGES[key] : key}`);
@@ -63,6 +65,8 @@ const calculateHandValue = (hand) => {
   if (numberOfAces === 0) {
     return nonAcesValue;
   } else {
+    // either 1 ace will be worth 11 points and the rest worth 1, or every ace
+    // will be worth 1 point
     let maxAceValue = numberOfAces + 10;
 
     if (nonAcesValue + maxAceValue <= MAX_HAND_SCORE) {
@@ -122,7 +126,7 @@ const dealerTurn = (game) => {
   }
 
   if (!busted(game.dealerScore)) {
-    prompt("Dealer stays.");
+    prompt("dealerStay");
   }
 };
 
@@ -142,7 +146,7 @@ const detectGameWinner = (game) => {
 
 const gameWinnerExists = (game) => !!detectGameWinner(game);
 
-const displayResults = (game) => {
+const displayGameResults = (game) => {
   displayHand("player", game);
   displayHand("dealer", game);
 
@@ -154,33 +158,84 @@ const displayResults = (game) => {
   }
 };
 
-while (true) {
-  console.clear();
+const updateMatchResults = (game, matchResults) => {
+  if (gameWinnerExists(game)) {
+    matchResults[`${detectGameWinner(game)}`] += 1;
+  }
+};
 
-  let game = initializeGame();
-  deal(game);
+const resetMatch = (matchResults) => {
+  matchResults.player = 0;
+  matchResults.dealer = 0;
+};
 
-  displayHand("player", game);
-  displayHand("dealer", game, false);
-
-  prompt("playerTurn");
-  playerTurn(game);
-
-  if (busted(game.playerScore)) {
-    prompt("playerBust");
+const detectMatchWinner = (matchResults) => {
+  if (matchResults.player >= GAME_WINS_TO_WIN_MATCH) {
+    return "player";
+  } else if (matchResults.dealer >= GAME_WINS_TO_WIN_MATCH) {
+    return "dealer";
   } else {
-    prompt("dealerTurn");
-    dealerTurn(game);
+    return null;
+  }
+};
 
-    if (busted(game.dealerScore)) {
-      prompt("dealerBust");
-    }
+const matchWinnerExists = (matchResults) => !!detectMatchWinner(matchResults);
+
+const displayMatchResults = (matchResults) => {
+  if (matchWinnerExists(matchResults)) {
+    prompt(`${capitalize(detectMatchWinner(matchResults))} won the match!`);
+  } else {
+    prompt(`First to win ${GAME_WINS_TO_WIN_MATCH} games wins the match.`);
   }
 
-  displayResults(game);
+  prompt(`Player wins: ${matchResults.player}`);
+  prompt(`Dealer wins: ${matchResults.dealer}`);
+};
 
-  let anotherGame = validateInput("anotherGame", ["y", "n"]);
-  if (anotherGame !== "y") break;
+let matchResults = {
+  player: 0,
+  dealer: 0
+};
+
+while (true) {
+  resetMatch(matchResults);
+
+  while (true) {
+    console.clear();
+
+    let game = initializeGame();
+    deal(game);
+
+    displayHand("player", game);
+    displayHand("dealer", game, false);
+
+    prompt("playerTurn");
+    playerTurn(game);
+
+    if (busted(game.playerScore)) {
+      prompt("playerBust");
+    } else {
+      prompt("dealerTurn");
+      dealerTurn(game);
+
+      if (busted(game.dealerScore)) {
+        prompt("dealerBust");
+      }
+    }
+
+    displayGameResults(game);
+
+    updateMatchResults(game, matchResults);
+    displayMatchResults(matchResults);
+
+    if (matchWinnerExists(matchResults)) break;
+
+    let anotherGame = validateInput("anotherGame", YES_OR_NO_OPTIONS);
+    if (anotherGame !== "y") break;
+  }
+
+  let anotherMatch = validateInput("anotherMatch", YES_OR_NO_OPTIONS);
+  if (anotherMatch !== "y") break;
 }
 
 prompt("endProgram");

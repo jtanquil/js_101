@@ -22,6 +22,7 @@
   "ACE": "A",
   "MAX_HAND_SCORE": 21,
   "MOVES": ["hit", "stay"],
+  "YES_OR_NO_OPTIONS": ["y", "n"],
   "MESSAGES": {
     "playerMove": "Would you like to hit or stay? (choices are 'hit' or 'stay')",
     "playerTurn": "Player's turn.",
@@ -34,7 +35,9 @@
     "dealerBust": "Dealer busts! Player wins.",
     "tie": "The game is a tie.",
     "anotherGame": "Play another game? ('y' or 'n')",
+    "anotherMatch": "Play another match? ('y' or 'n')",
     "endProgram": "Thank you for playing Twenty-One!"
   },
-  "DEALER_STAY_SCORE": 17
+  "DEALER_STAY_SCORE": 17,
+  "GAME_WINS_TO_WIN_MATCH": 5
 }
