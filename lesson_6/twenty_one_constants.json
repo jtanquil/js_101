@@ -25,13 +25,16 @@
   "MESSAGES": {
     "playerMove": "Would you like to hit or stay? (choices are 'hit' or 'stay')",
     "playerTurn": "Player's turn.",
+    "playerHit": "Player hits.",
+    "playerStay": "Player stays.",
     "playerBust": "Player busts! Dealer wins.",
     "dealerTurn": "Dealer's turn.",
     "dealerHit": "Dealer hits.",
     "dealerStay": "Dealer stays.",
     "dealerBust": "Dealer busts! Player wins.",
     "tie": "The game is a tie.",
-    "anotherGame": "Play another game? ('y' or 'n')"
+    "anotherGame": "Play another game? ('y' or 'n')",
+    "endProgram": "Thank you for playing Twenty-One!"
   },
   "DEALER_STAY_SCORE": 17
 }

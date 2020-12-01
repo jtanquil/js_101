@@ -11,12 +11,10 @@ const MESSAGES = CONSTANTS.MESSAGES;
 const DEALER_STAY_SCORE = CONSTANTS.DEALER_STAY_SCORE;
 
 const prompt = (key) => {
-  if (MESSAGES.hasOwnProperty(key)) {
-    console.log(`=> ${MESSAGES[key]}`);
-  } else {
-    console.log(`=> ${key}`);
-  }
+  console.log(`=> ${MESSAGES.hasOwnProperty(key) ? MESSAGES[key] : key}`);
 };
+
+const capitalize = (string) => string[0].toUpperCase() + string.slice(1);
 
 const validateInput = (message, options) => {
   prompt(message);
@@ -80,11 +78,13 @@ const calculateHandValue = (hand) => {
 
 const busted = (hand) => calculateHandValue(hand) > MAX_HAND_SCORE;
 
-const printHand = (player, game) => {
-  let hand = player === "Player" ?
-    game.playerHand.join(', ') :
-    game.dealerHand[0] + `, one unknown card`;
-  console.log(`${player}'s hand: ${hand}`);
+const displayHand = (player, game, revealHand = true) => {
+  let playerHand = game[`${player}Hand`];
+  let hand =
+    revealHand ? playerHand.join(', ') : playerHand[0] + `, one unknown card`;
+  // only display the hand's value if the entire hand is being revealed
+  let value = revealHand ? ` (Value: ${calculateHandValue(playerHand)})` : '';
+  prompt(`${capitalize(player)}'s hand: ${hand}${value}`);
 };
 
 const playerTurn = (game) => {
@@ -94,9 +94,14 @@ const playerTurn = (game) => {
     if (playerMove === 'stay') break;
 
     drawCards(game.deck, game.playerHand);
-    printHand("Player", game);
+    prompt("playerHit");
+    displayHand("player", game);
 
     if (busted(game.playerHand)) break;
+  }
+
+  if (!busted(game.playerHand)) {
+    prompt("playerStay");
   }
 };
 
@@ -104,25 +109,27 @@ const dealerTurn = (game) => {
   while (calculateHandValue(game.dealerHand) < DEALER_STAY_SCORE) {
     prompt("dealerHit");
     drawCards(game.deck, game.dealerHand);
-
-    if (busted(game.dealerHand)) break;
   }
 
-  prompt("dealerStay");
+  if (!busted(game.dealerHand)) {
+    prompt("Dealer stays.");
+  }
 };
 
-const getGameWinner = (game) => {
+const detectGameWinner = (game) => {
   let playerScore = calculateHandValue(game.playerHand);
   let dealerScore = calculateHandValue(game.dealerHand);
 
   if (busted(game.dealerHand) || playerScore > dealerScore) {
-    return "Player";
+    return "player";
   } else if (busted(game.playerHand) || playerScore < dealerScore) {
-    return "Dealer";
+    return "dealer";
   } else {
     return null;
   }
 };
+
+const gameWinnerExists = (game) => !!detectGameWinner(game);
 
 while (true) {
   console.clear();
@@ -130,8 +137,8 @@ while (true) {
   let game = initializeGame();
   deal(game);
 
-  printHand("Player", game);
-  printHand("Dealer", game);
+  displayHand("player", game);
+  displayHand("dealer", game, false);
 
   prompt("playerTurn");
   playerTurn(game);
@@ -143,12 +150,15 @@ while (true) {
     dealerTurn(game);
 
     if (busted(game.dealerHand)) {
+      displayHand("dealer", game);
       prompt("dealerBust");
     } else {
-      let gameWinner = getGameWinner(game);
+      displayHand("player", game);
+      displayHand("dealer", game);
 
-      if (gameWinner) {
-        prompt(`${gameWinner} wins!`);
+      if (gameWinnerExists(game)) {
+        let gameWinner = detectGameWinner(game);
+        prompt(`${capitalize(gameWinner)} wins!`);
       } else {
         prompt("tie");
       }
@@ -158,3 +168,5 @@ while (true) {
   let anotherGame = validateInput("anotherGame", ["y", "n"]);
   if (anotherGame !== "y") break;
 }
+
+prompt("endProgram");
