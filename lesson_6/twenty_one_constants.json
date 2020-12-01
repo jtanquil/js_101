@@ -1,0 +1,37 @@
+{
+  "PLAYING_CARDS": ["2", "2", "2", "2", "3", "3", "3", "3", "4", "4", "4", "4",
+    "5", "5", "5", "5", "6", "6", "6", "6", "7", "7", "7", "7", "8", "8", "8",
+    "8", "9", "9", "9", "9", "10", "10", "10", "10", "J", "J", "J", "J", "Q",
+    "Q", "Q", "Q", "K", "K", "K", "K", "A", "A", "A", "A"],
+  "INITIAL_HAND_SIZE": 2,
+  "CARD_VALUES": {
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "6": 6,
+    "7": 7,
+    "8": 8,
+    "9": 9,
+    "10": 10,
+    "J": 10,
+    "Q": 10,
+    "K": 10
+  },
+  "ACE": "A",
+  "MAX_HAND_SCORE": 21,
+  "MOVES": ["hit", "stay"],
+  "MESSAGES": {
+    "playerMove": "Would you like to hit or stay? (choices are 'hit' or 'stay')",
+    "playerTurn": "Player's turn.",
+    "playerBust": "Player busts! Dealer wins.",
+    "dealerTurn": "Dealer's turn.",
+    "dealerHit": "Dealer hits.",
+    "dealerStay": "Dealer stays.",
+    "dealerBust": "Dealer busts! Player wins.",
+    "tie": "The game is a tie.",
+    "anotherGame": "Play another game? ('y' or 'n')"
+  },
+  "DEALER_STAY_SCORE": 17
+}
