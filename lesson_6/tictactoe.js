@@ -34,6 +34,8 @@ const joinOr = (arr, delimiter = ', ', lastElementStr = 'or') => {
   }
 };
 
+const capitalize = (string) => string[0].toUpperCase() + string.slice(1);
+
 const validateInput = (message, responses) => {
   prompt(message);
   let answer = readline.question().toLowerCase().trim();
@@ -77,7 +79,7 @@ const displayBoard = (board) => {
 };
 
 const emptySquares = (board) =>
-  Object.keys(board).filter((key) => board[key] === INITIAL_MARKER);
+  Object.keys(board).filter((square) => board[square] === INITIAL_MARKER);
 
 const playerChoosesSquare = (board) => {
   let validChoices = emptySquares(board);
@@ -88,7 +90,8 @@ const playerChoosesSquare = (board) => {
 };
 
 const countMarkers = (board, line, marker) =>
-  line.reduce((acc, ele) => (board[ele] === marker ? acc + 1 : acc), 0);
+  line.reduce((markerCount, square) =>
+    (board[square] === marker ? markerCount + 1 : markerCount), 0);
 
 const isImmediateThreat = (board, line) => {
   return countMarkers(board, line, HUMAN_MARKER) === 2 &&
@@ -96,7 +99,7 @@ const isImmediateThreat = (board, line) => {
 };
 
 const getEmptySquare = (board, line) =>
-  line.find((ele) => board[ele] === INITIAL_MARKER);
+  line.find((square) => board[square] === INITIAL_MARKER);
 
 const findImmediateThreats = (board) =>
   WINNING_LINES.filter((line) => isImmediateThreat(board, line))
@@ -154,13 +157,13 @@ const detectWinner = (board) => {
       board[sq2] === HUMAN_MARKER &&
       board[sq3] === HUMAN_MARKER
     ) {
-      return 'Player';
+      return 'player';
     } else if (
       board[sq1] === COMPUTER_MARKER &&
       board[sq2] === COMPUTER_MARKER &&
       board[sq3] === COMPUTER_MARKER
     ) {
-      return 'Computer';
+      return 'computer';
     }
   }
 
@@ -176,18 +179,14 @@ const printGameWins = (gameWins) => {
 };
 
 const updateGameWins = (winner, gameWins) => {
-  if (winner === 'Player') {
-    gameWins.player += 1;
-  } else {
-    gameWins.computer += 1;
-  }
+  gameWins[winner] += 1;
 };
 
 const detectMatchWinner = (gameWins) => {
   if (gameWins.player === GAMES_TO_WIN_MATCH) {
-    return 'Player';
+    return 'player';
   } else if (gameWins.computer === GAMES_TO_WIN_MATCH) {
-    return 'Computer';
+    return 'computer';
   }
 
   return null;
@@ -205,7 +204,9 @@ while (true) {
   while (true) {
     let board = initializeBoard();
 
-    let firstPlayer = validateInput("Who will move first?", FIRST_PLAYER_OPTIONS);
+    let firstPlayer =
+      validateInput(`Who will move first? (${joinOr(FIRST_PLAYER_OPTIONS)})`,
+        FIRST_PLAYER_OPTIONS);
     let currentPlayer = firstPlayer;
 
     while (true) {
@@ -221,7 +222,7 @@ while (true) {
 
     if (someoneWon(board)) {
       let winner = detectWinner(board);
-      prompt(`${winner} won!`);
+      prompt(`${capitalize(winner)} won!`);
       updateGameWins(winner, gameWins);
     } else {
       prompt("It's a tie!");
