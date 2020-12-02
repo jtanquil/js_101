@@ -226,3 +226,70 @@ sumOfSums([1, 2, 3, 4, 5]);  // (1) + (1 + 2) + (1 + 2 + 3) + (1 + 2 + 3 + 4) + 
   - repeat until `index` is equal to the length of `arr`.
 3. for each leading subsequence of `arr`, find the sum of its elements and add the result to `sum`.
 4. return `sum`.
+
+8. Write a function that takes a grocery list (a two-dimensional array) with each element containing a fruit and a quantity, and returns a one-dimensional array of fruits, in which each fruit appears a number of times equal to its quantity.
+
+**Input:** an two-dimensional array whose elements are two-element arrays containing a fruit (a string) and a quantity (a number). (question: are there any restrictions to the number? will the two-dimensional array be empty? are the subarrays allowed to be empty? are the fruit names allowed to be empty?)
+
+**Output:** a one-dimensional array of fruits, in which each fruit appears a number of times equal to its corresponding quantity
+
+**Assumptions:** any quantities that appear in the subarrays will be positive integers. Fruit names can be empty, the subarrays can't be nonempty, but the entire two-dimensional array can be empty
+
+**Examples:**
+
+```javascript
+buyFruit([['apple', 3], ['orange', 1], ['banana', 2]]);
+// returns ["apple", "apple", "apple", "orange", "banana", "banana"]
+```
+
+- output order matches the order of the fruits in the input (apples are first in the input, first in the output, then oranges, then bananas)
+
+**Data Structure:** input is a two-dimensional array, output is a one-dimensional array. We can use array methods on the two-dimensional array to return a one-dimensional array.
+
+**Algorithm:** given a two-dimensional array `groceryArr`,
+
+1. let `outputArr` be an empty array.
+2. loop through the elements of `groceryArr`.
+3. for each element `[fruit, quantity]` of `groceryArr`, push the string `fruit` to `outputArr` `quantity` times.
+4. return `outputArr`.
+
+10. Building on the previous exercise, write a function that returns true or false based on whether or not an inventory item is available. As before, the function takes two arguments: an inventory item and a list of transactions. The function should return true only if the sum of the quantity values of the item's transactions is greater than zero. Notice that there is a movement property in each transaction object. A movement value of 'out' will decrease the item's quantity.
+
+**Input:** an inventory id (number), and an array of transactions. Each transaction is an object with an `id` (number), a `movement` (either `'in'` or `'out'`) and a `quantity` (number). (questions: can the parameter inventory id be undefined? can the transactions array be empty? what are the restrictions on the values of the transaction id/movement/quantity?)
+
+**Output:** `true` if the sum of quantity values for the input inventory id is greater than 0, `false` otherwise. The quantity value is computed by taking all transactions of that inventory id, summing the quantities of the transactions with `movement` value `'in'`, and subtracting from that the quantities of transactions with `movement` value `'out'`.
+
+**Assumptions:** the inventory id will be a number. The transaction object will have an `id` that is a number, a `movement` that is either `'in'` or `'out'`, and a `quantity` that is a number. If there are no transactions for the given inventory id, the output should be `false` (this also covers the case where the transactions array is empty)
+
+**Examples:**
+
+```javascript
+let transactions = [ { id: 101, movement: 'in',  quantity:  5 },
+                     { id: 105, movement: 'in',  quantity: 10 },
+                     { id: 102, movement: 'out', quantity: 17 },
+                     { id: 101, movement: 'in',  quantity: 12 },
+                     { id: 103, movement: 'out', quantity: 20 },
+                     { id: 102, movement: 'out', quantity: 15 },
+                     { id: 105, movement: 'in',  quantity: 25 },
+                     { id: 101, movement: 'out', quantity: 18 },
+                     { id: 102, movement: 'in',  quantity: 22 },
+                     { id: 103, movement: 'out', quantity: 15 }, ];
+
+isItemAvailable(101, transactions);     // false
+isItemAvailable(103, transactions);     // false
+isItemAvailable(105, transactions);     // true
+```
+
+- first case: 3 transactions for 101 (5 in, 12 in, 18 out), total quantity is 5 + 12 - 18 = -1 <= 0, return `false`
+- second case: 2 transactions for 103 (20 out, 15 out), total quantity is -20 - 15 = -35 <= 0, return `false`
+- third case: 2 transactions for 105 (10 in, 25 in), total quantity is 10 + 25 = 35 > 0, return `true`
+
+**Data Structure:** our inputs are a number and an array, and our output is a boolean. Our intermediate function `transactionsFor` filters the input array, returning another array. We can use array methods like `reduce` to transform this into the desired boolean output.
+
+**Algorithm:** given an `id` and an array of `transactions`,
+
+1. filter `transactions`, keeping only the elements of `transactions` whose id matches `id`.
+2. reduce the remaining elements of `transactions`:
+  - start with an accumulator of `0`.
+  - for each transaction, either add its `quantity` to the accumulator if the transaction's movement is `'in'`, or subtract it from the accumulator if the movement is `'out'`.
+3. return `true` if the result is greater than 0, and false otherwise.
