@@ -10,7 +10,8 @@ const capitalize = (string) => string[0].toUpperCase() + string.slice(1);
 
 const validateInput = (message, options) => {
   prompt(message);
-  let response = readline.question().trim();
+  // responses are treated as case-insensitive
+  let response = readline.question().toLowerCase().trim();
 
   while (!options.includes(response)) {
     prompt(`Invalid input, please try again. Options are: ${options.join(', ')}`);
@@ -20,8 +21,23 @@ const validateInput = (message, options) => {
   return response;
 };
 
+const createDeck = () => {
+  let deck = [];
+
+  CONSTANTS.PLAYING_CARDS_VALUES.forEach((value) => {
+    Object.keys(CONSTANTS.PLAYING_CARDS_SUITS).forEach((suit) => {
+      deck.push({
+        value: value,
+        suit: suit
+      });
+    });
+  });
+
+  return deck;
+};
+
 const initializeDeck = () => {
-  let deck = CONSTANTS.PLAYING_CARDS.slice();
+  let deck = createDeck();
   let outputArr = [];
 
   while (deck.length > 0) {
@@ -48,9 +64,9 @@ const drawCards = (deck, hand, draws = 1) => {
 };
 
 const calculateHandValue = (hand) => {
-  let nonAces = hand.filter((card) => card !== CONSTANTS.ACE);
+  let nonAces = hand.filter((card) => card.value !== CONSTANTS.ACE);
   let nonAcesValue =
-    nonAces.reduce((sum, card) => sum + CONSTANTS.CARD_VALUES[card], 0);
+    nonAces.reduce((sum, card) => sum + CONSTANTS.CARD_VALUES[card.value], 0);
   let numberOfAces = hand.length - nonAces.length;
 
   if (numberOfAces === 0) {
@@ -79,10 +95,13 @@ const deal = (game) => {
   updateHandValue(game, "dealer");
 };
 
+const cardString = (card) =>
+  `${card.value} of ${CONSTANTS.PLAYING_CARDS_SUITS[card.suit]}`;
+
 const busted = (handValue) => handValue > CONSTANTS.MAX_HAND_SCORE;
 
 const displayHand = (player, game, revealHand = true) => {
-  let playerHand = game[`${player}Hand`];
+  let playerHand = game[`${player}Hand`].map(cardString);
   let hand =
     revealHand ? playerHand.join(', ') : playerHand[0] + `, one unknown card`;
   // only display the hand's value if the entire hand is being revealed
@@ -183,17 +202,28 @@ const displayMatchResults = (matchResults) => {
   prompt(`Dealer wins: ${matchResults.dealer}`);
 };
 
+const displayRules = () => {
+  prompt("welcome");
+  prompt("howToPlay1");
+  prompt("howToPlay2");
+  prompt("howToPlay3");
+  prompt("howToPlay4");
+  prompt("howToPlay5");
+  prompt("cardValues1");
+  prompt("cardValues2");
+};
+
 let matchResults = {
   player: 0,
   dealer: 0
 };
 
+displayRules();
+
 while (true) {
   resetMatch(matchResults);
 
   while (true) {
-    console.clear();
-
     let game = initializeGame();
     deal(game);
 
@@ -223,6 +253,8 @@ while (true) {
 
     let anotherGame = validateInput("anotherGame", CONSTANTS.YES_OR_NO_OPTIONS);
     if (anotherGame !== "y") break;
+
+    console.clear();
   }
 
   let anotherMatch = validateInput("anotherMatch", CONSTANTS.YES_OR_NO_OPTIONS);

@@ -1,8 +1,11 @@
 {
-  "PLAYING_CARDS": ["2", "2", "2", "2", "3", "3", "3", "3", "4", "4", "4", "4",
-    "5", "5", "5", "5", "6", "6", "6", "6", "7", "7", "7", "7", "8", "8", "8",
-    "8", "9", "9", "9", "9", "10", "10", "10", "10", "J", "J", "J", "J", "Q",
-    "Q", "Q", "Q", "K", "K", "K", "K", "A", "A", "A", "A"],
+  "PLAYING_CARDS_VALUES": ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"],
+  "PLAYING_CARDS_SUITS": {
+    "H": "Hearts",
+    "D": "Diamonds",
+    "C": "Clubs",
+    "S": "Spades"
+  },
   "INITIAL_HAND_SIZE": 2,
   "CARD_VALUES": {
     "1": 1,
@@ -15,11 +18,11 @@
     "8": 8,
     "9": 9,
     "10": 10,
-    "J": 10,
-    "Q": 10,
-    "K": 10
+    "Jack": 10,
+    "Queen": 10,
+    "King": 10
   },
-  "ACE": "A",
+  "ACE": "Ace",
   "MAX_HAND_SCORE": 21,
   "MOVES": ["hit", "stay"],
   "YES_OR_NO_OPTIONS": ["y", "n"],
@@ -36,7 +39,16 @@
     "tie": "The game is a tie.",
     "anotherGame": "Play another game? ('y' or 'n')",
     "anotherMatch": "Play another match? ('y' or 'n')",
-    "endProgram": "Thank you for playing Twenty-One!"
+    "endProgram": "Thank you for playing Twenty-One!",
+    "welcome": "Welcome to Twenty-One!",
+    "howToPlay1": "How to play: the player and dealer are both dealt two cards.",
+    "howToPlay2": "First, the player chooses to hit (draw a card) or stay (keep their hand).",
+    "howTtPlay2": "They can keep hitting until they choose to stay, or they bust (their hand goes over 21 points).", 
+    "howToPlay3": "Then the dealer hits until their hand goes over 17 points or they bust.",
+    "howToPlay4": "If the player busts, the dealer wins. If the dealer busts, the player wins.",
+    "howToPlay5": "Otherwise, whoever has the higher point total wins.",
+    "cardValues1": "Scoring: cards with values 2-10 are worth 2-10 points, respectively. Face cards (J/Q/K) are worth 10 points each.",
+    "cardValues2": "Aces (A) are worth 11 points unless the hand becomes worth more than 21 points - then they are worth 1 point." 
   },
   "DEALER_STAY_SCORE": 17,
   "GAME_WINS_TO_WIN_MATCH": 5
