@@ -150,3 +150,135 @@ swapCase('Tonight on XYZ-TV');      // "tONIGHT ON xyz-tv"
   - if `char` is neither, map it to `char`
 3. join the result from step 2.
 4. return the result from step 3. 
+
+---
+
+6. Write a function that takes a string as an argument, and returns that string with a staggered capitalization scheme. Every other character, starting from the first, should be capitalized and should be followed by a lowercase or non-alphabetic character. Non-alphabetic characters should not be changed, but should be counted as characters for determining when to switch between upper and lower case.
+
+**Input:** a string
+
+**Output:** the input string with alternating caps: every other character, starting with the first, should be capitalized, with every subsequent character being lowercase or a non-alphabetic character
+
+**Question:** what happens if the first character of the string is non-alphabetic, and the second is alphabetic?
+
+**Assumption:** since the problem says "non-alphabetic characters should be counted as characters for determining when to switch cases", if the string begins with a non-alphabetic character, then that should count towards determining which characters are capitalized and which characters are lowercase
+
+**Examples:**
+
+```javascript
+staggeredCase('I Love Launch School!');        // "I LoVe lAuNcH ScHoOl!"
+staggeredCase('ALL_CAPS');                     // "AlL_CaPs"
+staggeredCase('ignore 77 the 4444 numbers');   // "IgNoRe 77 ThE 4444 nUmBeRs"
+```
+
+- in each of these cases, non-alphabetic characters (spaces in 1st example, underscore in 2nd, spaces and numbers in 3rd) continue the alternating capitalization scheme (assuming that alternating capitalization doesn't change non-alphabetic characters)
+- this is consistent with the problem description of non-alphabetic characters being counted as characters to determine when to alternate capitalization
+
+**Data Structure**: the input and output are both strings, but the output is the input string with changes made to some of the characters depending on their location in the string, so we will convert the input string into an array of its characters in the intermediate steps
+
+**Algorithm:** given a string `str`,
+
+1. split `str` into an array of its characters
+2. map the array of characters: for each `char`, if its index is even, capitalize it. if its index is odd, lowercase it. (for non-alphabetic characters this doesn't change the character at all)
+3. join the result from step 2 and return the resulting string.
+
+---
+
+7. Modify the function from the previous exercise so it ignores non-alphabetic characters when determining whether it should uppercase or lowercase each letter. The non-alphabetic characters should still be included in the return value; they just don't count when toggling the desired case.
+
+**input:** a string
+
+**output:** a string with an alternating capitalization scheme like last problem, except non-alphabetic characters are not counted as characters for alternating capitalization
+
+**Data Structure:** same as before - the input and output are both strings, but we have to change some of the characters in the input to get the desired output, so we will convert the input string into an array and modify the array in the intermediate steps
+
+**Algorithm:** given a string `str`,
+
+1. set `alphabeticalCharacters` to `0`.
+2. split `str` into an array of its characters
+3. map the array of characters: for each `char`, check whether or not it is alphabetical
+4. if it is, increment `alphabeticalCharacters` by 1.
+5. if `alphabeticalCharacters` is odd, return `char.toUpperCase()`. if it is even, return `char.toLowerCase()`.
+6. if `char` is not alphabetical, return `char`.
+7. join the result from step 3 and return the resulting string
+
+---
+
+8. Write a function that takes a string as an argument, and returns an array that contains every word from the string, with each word followed by a space and the word's length. If the argument is an empty string or if no argument is passed, the function should return an empty array.
+
+**input:** a string - either empty, or words separated by single spaces
+
+**output:** an array where the elements are the words of the array concatenated to a space and the length of that word. if the input string is empty or no argument is passed, the function should return an empty array
+
+**examples:**
+
+```javascript
+wordLengths('cow sheep chicken');
+// ["cow 3", "sheep 5", "chicken 7"]
+
+wordLengths('baseball hot dogs and apple pie');
+// ["baseball 8", "hot 3", "dogs 4", "and 3", "apple 5", "pie 3"]
+
+wordLengths("It ain't easy, is it?");
+// ["It 2", "ain't 5", "easy, 5", "is 2", "it? 3"]
+
+wordLengths('Supercalifragilisticexpialidocious');
+// ["Supercalifragilisticexpialidocious 34"]
+
+wordLengths('');      // []
+wordLengths();        // []
+```
+
+- words are sequences of characters separated by a single space; punctuation counts as part of a word
+
+**Data Structure:** the input is a string and the output is an array. Each element of the array corresponds to a word in the input string, so we can split the string into an array of its words in the intermediate steps
+
+**Algorithm:** given a string `str`,
+
+1. if `str` is `undefined` or empty, return an empty array `[]`.
+2. otherwise, split `str` into an array of its words (separated by a single space).
+3. map the elements of the array: for each `word` in the array, map it to `word` concatenated to a space and `word.length`.
+4. return the result from step 3
+
+---
+
+9. Write a function that takes a word and a string of text as parameters, and returns an integer representing the number of times the word appears in the text.
+
+You may assume that the word and text inputs will always be provided, and that all word breaks are spaces. Thus, some words will include punctuation such as periods and commas.
+
+**input:** a `word` and `text`, both strings.
+
+**output:** an integer representing the number of times `word` appears in `text`.
+
+**assumptions:** a word is a sequence of characters separated by single spaces (consistent with all word breaks being spaces)
+
+```javascript
+const text = 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Sed quis autem vel est, iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?';
+
+searchWord('sed', text);     // 4
+searchWord('est', text);     // 0
+searchWord('est,', text);    // 2
+```
+
+- search is case insensitive (example 1 - `'sed'` matches `'Sed'` at the beginning)
+- punctuation is included in words (example 2 - `'est'` fails to match `'est,`)
+
+**Data Structure:** the input is 2 strings and the output is an integer. In the intermediate steps, we can convert the `text` input into an array of words (sequences of characters separated by strings) and use `filter` on the array.
+
+**Algorithm:** given strings `text` and `word`,
+
+1. split `text` into an array of its words
+2. filter `text`: for each word in text, check whether it is equal to the input string `word` (case-insensitive), keeping only the words in the array that are equal to `word`.
+3. return the length of the resulting array from step 2
+
+--- 
+
+10. For this exercise, write a function that takes a word and a string of text as parameters, and returns the text with every instance of the word highlighted. To highlight a word, enclose the word with two asterisks ('**') (`highlight` -> `**HIGHLIGHT**`)
+
+**Algorithm**: given strings `text` and `word`,
+
+1. split `text` into an array of its words
+2. map `text`: for each word in the text, check whether it is equal to the input string `word`
+3. if it isn't, return the word as is
+4. if it is, return the highlighted word
+5. join the resulting array from step 2 with `" "` as a delimiter, and return the result
