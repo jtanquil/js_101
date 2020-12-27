@@ -152,3 +152,143 @@ fridayThe13ths(2017);      // 2
 5. increment the `date` by 1 day.
   - call `date.setHours(date.getHours() + 24)`
 6. when the loop is finished, return `count`.
+
+---
+
+5. Write a function that takes an integer as an argument, and returns the next featured number greater than the integer. Issue an error message if there is no next featured number.
+
+**Input:** an integer
+
+**Output:** an integer that is the next featured number greater than the input integer, or an error if there is no next featured number 
+
+**Rules:**
+
+1. a featured number is a number that is odd, is a multiple of `7`, and has all of its digits occurring exactly once each
+2. the largest possible featured number is `9876543201`
+
+**Examples:**
+
+```javascript
+featured(12);           // 21
+featured(20);           // 21
+featured(21);           // 35
+featured(997);          // 1029
+featured(1029);         // 1043
+featured(999999);       // 1023547
+featured(999999987);    // 1023456987
+featured(9876543200);   // 9876543201
+featured(9876543201);   // "There is no possible number that fulfills those requirements."
+```
+
+- the output has to be strictly greater than the input (otherwise, `featured(21)` would return `21`)
+
+**Data Structure:** the input and output are both integers (numbers). Since one of the conditions for a featured number is that all of its digits occur exactly once, we will need to convert a number into a string and check its individual characters to determine whether or not it is a featured number
+
+**Algorithm:** given a number `num`,
+
+1. set `possibleFeaturedNumber` equal to `num`.
+2. if `possibleFeaturedNumber` is greater than or equal to the maximum featured number, return the error message
+3. otherwise, increment `possibleFeatureNumber` by 1.
+4. if `possibleFeaturedNumber` is a featured number, return it
+5. otherwise, repeat steps 2-4.
+
+To check if a number is featured: given a `possibleFeatureNumber`,
+
+1. if `possibleFeatureNumber` is not divisible by 7, return false
+2. if `possibleFeatureNumber` is even, return false
+3. if `possibleFeatureNumber` has digits that appear more than once, return false:
+    - let `counts` be an empty object
+    - convert `possibleFeatureNumber` into a string and split it into an array of its characters
+    - for each character `char` of the array, check whether or not it is a key of `counts`. if not, add the key `char` to `counts`. if `char` IS a key of `counts`, then that means that `char` has already appeared as a digit in `possibleFeatureNumber`, return false
+4. otherwise, return true
+
+---
+
+5. Write a function that computes the difference between the square of the sum of the first count positive integers and the sum of the squares of the first count positive integers.
+
+**Input:** a positive integer, `count`
+
+**Output:** an integer that is the difference between the square of the sum of the first `count` positive integers, and the sum of the squares of the first `count` integers
+
+**Examples:**
+
+```javascript
+sumSquareDifference(3);      // 22 --> (1 + 2 + 3)**2 - (1**2 + 2**2 + 3**2)
+sumSquareDifference(10);     // 2640
+sumSquareDifference(1);      // 0
+sumSquareDifference(100);    // 25164150
+```
+
+**Algorithm:** given a positive integer `count`,
+
+1. let `squareOfSum = 0`, `sumOfSquares = 0`, and `loopCounter = 1`
+2. while `loopCounter <= count`, run the following loop:
+3. add `loopCounter` to `squareOfSum`, and add `loopCounter ** 2` to `sumOfSquares`
+4. increment `loopCounter` by 1
+5. once the loop exits, return `squareOfSum ** 2 - sumOfSquares`
+
+---
+
+7. Write a function that takes an array as an argument and sorts that array using the bubble sort algorithm described above. The sorting should be done "in-place" — that is, the function should mutate the array. You may assume that the array contains at least two elements.
+
+**Input:** an array with at least two elements
+
+**Output:** the same array as the input, sorted in-place using bubble sort
+
+**Examples:**
+
+```javascript
+let array1 = [5, 3];
+bubbleSort(array1);
+console.log(array1);    // [3, 5]
+
+let array2 = [6, 2, 7, 1, 4];
+bubbleSort(array2);
+console.log(array2);    // [1, 2, 4, 6, 7]
+
+let array3 = ['Sue', 'Pete', 'Alice', 'Tyler', 'Rachel', 'Kim', 'Bonnie'];
+bubbleSort(array3);
+console.log(array3);    // ["Alice", "Bonnie", "Kim", "Pete", "Rachel", "Sue", "Tyler"]
+```
+
+- third example, the elements are sorted in lexicographic order, as strings
+- using the normal relational operators, the elements are sorted in ascending order
+
+**Algorithm:** given an array `arr` with at least 2 elements,
+
+1. let `isSorted` be `false`.
+2. while `isSorted` is `false`, perform the following loop:
+3. set `isSorted` to `true`
+4. iterate through the elements of `arr`: compare each consecutive pair of elements of `arr`, `left` and `right`.
+5. if `left` > `right`, swap `left` and `right` and set `isSorted` to `false`.
+6. perform steps 4-6 for every consecutive pair of elements in `arr`.
+7. perform steps 2-6 until `isSorted` is `true` (so no elements were swapped)
+8. return `arr`.
+
+---
+
+8. Write a program that prints the longest sentence in a string based on the number of words. 
+
+**Input:** a string
+
+**Output:** log the longest sentence in the string, and the length of the sentence, to the console
+
+**Rules:**
+
+1) sentences may end in periods `.`, exclamation points `!`, or question marks `?`
+2) words are sequences of characters that are separated by a single space
+3) preserve the punctuation at the end of the sentence in the console output
+
+**Data Structure:** the input and output are both strings, but counting the length of a sentence requires splitting up the input string into an array of its words.
+
+**Algorithm:** given a string `str`,
+
+1. let `currentLongestSentence` and `currentSentence` both be empty arrays
+2. split `str` into an array of its words. for each `word`,
+3. add `word` to `currentSentence`
+4. if `word` ends with a period, exclamation point or question mark, then it is the end of a sentence
+    - if `currentSentence` is longer than `currentLongestSentence`, assign `currentLongestSentence` to `currentSentence`
+    - assign `currentSentence` to an empty array
+5. repeat steps 3 and 4 until reaching the end of the array of words of `str`.
+6. `currentLongestSentence` will contain the words of the longest sentence and its length will be the number of words of the longest sentence.
+7. join the elements of `currentLongestSentence`, with a single space ` ` as a delimiter, to retrieve the longest sentence of `str`, and output it and the length of `currentLongestSentence` to the console.
